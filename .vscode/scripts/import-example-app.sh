@@ -13,9 +13,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-set -e
-
-VELOCITAS_EXAMPLES_PATH="$(python -c 'import velocitas_examples; print(velocitas_examples.__path__[0])')"
+SDV_EXAMPLES_PATH="$(python -c 'import os,inspect,sdv; print(os.path.dirname(inspect.getfile(sdv)))')_examples"
 CHOSEN_EXAMPLE=$@
 
 if [[ `git status --porcelain app/` ]]; then
@@ -27,20 +25,21 @@ if [[ `git status --porcelain app/` ]]; then
   echo "######################## WARNING #########################"
 else
   rm -rf app/
-  cp -r $VELOCITAS_EXAMPLES_PATH/$CHOSEN_EXAMPLE/. app/
+  cp -a $SDV_EXAMPLES_PATH/$CHOSEN_EXAMPLE/. app/
 
-  # Re-compile requirements*.txt (including app and tests one)
-  pip-compile -r -q ./requirements.in
-  # Re-intstall necessary packages in DevContainer
-  for file in ./requirements.txt ./app/requirements.txt ./app/tests/requirements.txt ./app/requirements-links.txt
-  do
-      if [ -f $file ]; then
-          pip3 install -r $file
-      fi
-  done
+  if [[ -f "./app/requirements.txt" ]]; then
+    pip install -r ./app/requirements.txt
+  fi
+
+  if [[ -f "./app/requirements-links.txt" ]]; then
+    pip install -r ./app/requirements-links.txt
+  fi
+
+  if [[ -f "./app/tests/requirements.txt" ]]; then
+    pip install -r ./app/tests/requirements.txt
+  fi
 
   # Generate model referenced by imported example
-  velocitas exec vehicle-model-lifecycle download-vspec
   velocitas exec vehicle-model-lifecycle generate-model
 
   echo "#######################################################"

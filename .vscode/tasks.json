@@ -49,8 +49,8 @@
 			"command": "velocitas exec runtime-local up",
 			"group": "none",
 			"presentation": {
-				"panel": "dedicated",
-				"clear": true,
+				"reveal": "always",
+				"panel": "dedicated"
 			},
 			"problemMatcher": []
 		},
@@ -62,8 +62,8 @@
 				"velocitas exec runtime-local run-vehicle-app --dapr-app-id vehicleapp --dapr-app-port 50008 python3 ${workspaceFolder}/app/src/main.py"
 			],
 			"presentation": {
-				"panel": "dedicated",
-				"clear": true,
+				"close": true,
+				"reveal": "never"
 			},
 			"problemMatcher": []
 		},
@@ -72,11 +72,8 @@
 			"detail": "Starts the VehicleDataBroker CLI",
 			"type": "shell",
 			"command": "velocitas exec runtime-local run-vehicledatabroker-cli",
-			"presentation": {
-				"panel": "dedicated",
-				"clear": true,
-			},
 			"group": "none",
+			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
@@ -85,6 +82,7 @@
 			"type": "shell",
 			"command": "pre-commit run --show-diff-on-failure --color=always --all-files",
 			"group": "none",
+			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
@@ -174,21 +172,7 @@
 			"label": "(Re-)generate vehicle model",
 			"detail": "(Re-)generates the vehicle model from source files specified in the AppManifest.",
 			"type": "shell",
-			"command": "velocitas exec vehicle-model-lifecycle download-vspec && velocitas exec vehicle-model-lifecycle generate-model",
-			"group": "none",
-			"presentation": {
-				"reveal": "always",
-				"panel": "dedicated",
-				"clear": true,
-				"close": false
-			},
-			"problemMatcher": []
-		},
-		{
-			"label": "(Re-)generate gRPC SDKs",
-			"detail": "(Re-)generates all auto-generated gRPC SDKs used by the app",
-			"type": "shell",
-			"command": "velocitas exec grpc-interface-support generate-sdk",
+			"command": "velocitas exec vehicle-model-lifecycle generate-model",
 			"group": "none",
 			"presentation": {
 				"reveal": "always",
@@ -286,20 +270,6 @@
 			"dependsOn": [
 				"Kanto Runtime - Up"
 			],
-			"problemMatcher": []
-		},
-		{
-			"label": "Kanto Runtime - Show kantUI Dashboard",
-			"detail": "Show dashboard of Kanto Runtime",
-			"type": "shell",
-			"command": "sudo kantui",
-			"group": "none",
-			"presentation": {
-				"reveal": "always",
-				"panel": "dedicated",
-				"clear": true,
-				"close": false
-			},
 			"problemMatcher": []
 		},
 	],

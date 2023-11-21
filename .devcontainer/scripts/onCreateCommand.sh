@@ -54,21 +54,25 @@ if [ -f $REQUIREMENTS ]; then
     pip3 install -r $REQUIREMENTS
 fi
 
-# Add repo to git safe.directory
+# add repo to git safe.directory
 REPO=$(pwd)
 git config --global --add safe.directory $REPO
-
-# Add git name and email from env variables
-if [[ -n "${GIT_CONFIG_NAME}" && -n "${GIT_CONFIG_EMAIL}" ]]; then
-    git config --global user.name $GIT_CONFIG_NAME
-    git config --global user.email $GIT_CONFIG_EMAIL
-fi
-
 
 echo "#######################################################"
 echo "### VADF package status                             ###"
 echo "#######################################################"
 velocitas upgrade --dry-run
+
+# Build NodeRed
+ROOT_DIRECTORY=$( realpath "$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/../.." )
+cd $ROOT_DIRECTORY/nodeRed
+# To remove first line which comes from velocitas sync command
+FIRST_FLOWS_LINE=$(head -n 1 flows.json| cut -c 4-)
+if [[ $FIRST_FLOWS_LINE == This* ]];then
+   echo "Trim flows.json, by deleting the maintenance hint."
+   tail +2 flows.json > tmp.flows && mv tmp.flows flows.json
+fi
+docker build -t nodered .
 
 # Don't let container creation fail if lifecycle management fails
 echo "Done!"
